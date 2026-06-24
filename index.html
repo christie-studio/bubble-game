@@ -366,9 +366,9 @@
   <script>
     const GAME_SECONDS = 20;
     const TARGET_SCORE = 15;
-    const MAX_BUBBLES = 8;
-    const BUBBLE_MIN_LIFE = 2300;
-    const BUBBLE_MAX_LIFE = 3200;
+    const MAX_BUBBLES = 6;
+    const BUBBLE_MIN_LIFE = 3000;
+    const BUBBLE_MAX_LIFE = 4200;
 
     const startScreen = document.getElementById('startScreen');
     const gameScreen = document.getElementById('gameScreen');
@@ -455,7 +455,7 @@
 
       fillBubbles();
       timerId = setInterval(tick, 1000);
-      spawnId = setInterval(fillBubbles, 450);
+      spawnId = setInterval(fillBubbles, 850);
     }
 
     function tick() {
@@ -490,8 +490,8 @@
 
     function getMaxBubblesNow() {
       const elapsed = GAME_SECONDS - timeLeft;
-      if (elapsed <= 6) return 3;
-      if (elapsed <= 13) return 5;
+      if (elapsed <= 7) return 2;
+      if (elapsed <= 14) return 4;
       return MAX_BUBBLES;
     }
 
@@ -502,8 +502,8 @@
       const maxNow = getMaxBubblesNow();
       const need = Math.max(0, maxNow - current);
 
-      // 每次最多補 2 顆，避免一下子太滿。
-      const addCount = Math.min(need, Math.random() < 0.65 ? 1 : 2);
+      // 每次只補 1 顆，避免畫面太快被泡泡塞滿。
+      const addCount = Math.min(need, 1);
       for (let i = 0; i < addCount; i++) {
         createBubble();
       }
