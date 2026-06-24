@@ -369,7 +369,7 @@
   <script>
     const GAME_SECONDS = 20;
     const TARGET_SCORE = 15;
-    const MAX_BUBBLES = 6;
+    const MAX_BUBBLES = 4;
     const BUBBLE_MIN_LIFE = 3000;
     const BUBBLE_MAX_LIFE = 4200;
 
@@ -456,7 +456,7 @@
 
       fillBubbles();
       timerId = setInterval(tick, 1000);
-      spawnId = setInterval(fillBubbles, 850);
+      spawnId = setInterval(fillBubbles, 1000);
     }
 
     function tick() {
@@ -492,7 +492,7 @@
     function getMaxBubblesNow() {
       const elapsed = GAME_SECONDS - timeLeft;
       if (elapsed <= 7) return 2;
-      if (elapsed <= 14) return 4;
+      if (elapsed <= 14) return 3;
       return MAX_BUBBLES;
     }
 
