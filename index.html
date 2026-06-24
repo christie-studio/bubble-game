@@ -397,6 +397,7 @@
     let soundOn = true;
     let timerId = null;
     let spawnId = null;
+    let spawnDelay = 1000;
     let bubbleId = 0;
     let audioCtx = null;
 
@@ -456,15 +457,34 @@
 
       fillBubbles();
       timerId = setInterval(tick, 1000);
-      spawnId = setInterval(fillBubbles, 1000);
+      startBubbleSpawner();
     }
 
     function tick() {
       timeLeft -= 1;
       timeText.textContent = timeLeft;
+      updateSpawnSpeed();
       if (timeLeft <= 0) {
         endGame();
       }
+    }
+
+    function startBubbleSpawner() {
+      spawnDelay = 1000;
+      scheduleNextBubble();
+    }
+
+    function updateSpawnSpeed() {
+      const elapsed = GAME_SECONDS - timeLeft;
+      spawnDelay = elapsed >= 12 ? 850 : 1000;
+    }
+
+    function scheduleNextBubble() {
+      if (!gameRunning) return;
+      spawnId = setTimeout(() => {
+        fillBubbles();
+        scheduleNextBubble();
+      }, spawnDelay);
     }
 
     function endGame() {
@@ -480,7 +500,7 @@
 
     function stopGameTimers() {
       if (timerId) clearInterval(timerId);
-      if (spawnId) clearInterval(spawnId);
+      if (spawnId) clearTimeout(spawnId);
       timerId = null;
       spawnId = null;
     }
@@ -503,7 +523,7 @@
       const maxNow = getMaxBubblesNow();
       const need = Math.max(0, maxNow - current);
 
-      // 每次只補 1 顆，避免畫面太快被泡泡塞滿。
+      // 每次檢查最多只補 1 顆；點掉或自然消失時不立刻補，避免瞬間跳出多顆。
       const addCount = Math.min(need, 1);
       for (let i = 0; i < addCount; i++) {
         createBubble();
@@ -539,7 +559,6 @@
         if (bubble.parentNode) {
           missedCount += 1;
           bubble.remove();
-          fillBubbles();
         }
       }, life);
 
@@ -572,7 +591,6 @@
 
       setTimeout(() => {
         bubble.remove();
-        fillBubbles();
       }, 220);
     }
 
